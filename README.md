@@ -1,135 +1,155 @@
-# Modelo Final em Produção
+# P3 — EDA Logística e Pedido
 
-Notebook de produção para o projeto de análise e modelagem preditiva de NPS. Desenvolvido a partir dos resultados do `EDA_Modelo_Preditivo_NPS_Final.ipynb`, com foco em transformar a predição em uma ferramenta operacional de priorização preventiva.
+> **Atraso, Frete, Tentativas e Valor do Pedido na Satisfação do Cliente**
 
 ---
 
-## Problema de negócio
+## Visão Geral
 
-A base analisada apresenta **74% dos clientes como detratores** (NPS de 6 ou menos). Esse nível de concentração não é uma exceção, é um padrão recorrente na operação.
+Este projeto aprofunda a análise exploratória de dados (EDA) das variáveis logísticas e de pedido com foco na satisfação do cliente medida por NPS. A base utilizada é a **versão V2** do dataset processado (`desafio_nps_processado_v2.csv`), na qual registros com `nps_score = 0` foram removidos para validação de robustez dos padrões identificados na V1.
 
-A insatisfação não é explicada por perfil demográfico (região, idade, tempo de relacionamento). Ela é explicada pela **jornada operacional**, o que significa que pode ser antecipada e tratada antes de se consolidar.
+O notebook parte de uma pergunta central:
 
-**Três drivers com maior impacto negativo no NPS** (validados com Kruskal-Wallis):
+> **Como atraso, frete, tentativas de entrega e valor do pedido se relacionam com a satisfação do cliente e com o faturamento observado?**
 
-| Driver | Ponto de ruptura |
+---
+
+## Resumo Executivo
+
+Mesmo após a remoção dos casos extremos (NPS = 0), a base V2 manteve um perfil crítico de satisfação: **forte concentração de Detratores** e **NPS oficial negativo**. Isso confirma que o problema estrutural identificado na V1 não é artefato dos outliers — ele é real e sistêmico.
+
+A análise identificou que a deterioração da experiência do cliente está diretamente associada à mecânica logística: atraso de entrega, tentativas fracassadas, custo proporcional do frete e faturamento em risco.
+
+### Achados principais
+
+| Dimensão | Achado |
 |---|---|
-| Atraso de entrega | 3 dias ou mais |
-| Reclamações recorrentes | 5 reclamações ou mais |
-| Múltiplos contatos com atendimento | 3 contatos ou mais |
+| **Atraso de entrega** | Principal variável associada à insatisfação; Detratores concentram maior atraso médio e mediano |
+| **Ponto de ruptura** | A análise por faixas revela o intervalo exato em que a proporção de Detratores escala de forma relevante |
+| **Frete proporcional** | O `freight_ratio` (frete / valor do pedido) revela impacto que o valor absoluto do frete não captura |
+| **Múltiplas tentativas** | Pedidos com mais de uma tentativa de entrega apresentam maior fricção logística e sinal de insatisfação |
+| **Faturamento com atraso** | Pedidos atrasados concentram faturamento relevante — melhoria logística é também preservação de receita |
+| **Análise regional** | Diferenças e semelhanças entre regiões indicam se o problema é localizado ou sistêmico |
+| **Correlação e testes** | Kruskal-Wallis + Mann-Whitney (Bonferroni) confirmam que a diferença de atraso entre grupos de NPS é **estatisticamente significativa** |
 
 ---
 
-## Solução proposta
+## Dataset
 
-Usar o modelo preditivo como uma camada de inteligência operacional para antecipar clientes com maior probabilidade de se tornarem detratores, transformando o NPS de um indicador retrospectivo em uma ferramenta de priorização preventiva.
+**Arquivo:** `desafio_nps_processado_v2.csv`  
+**Registros:** ~2.342 (após remoção dos NPS = 0)  
+**Colunas:** 26
 
-**Fluxo de produção:**
+### Principais variáveis
 
-1. Capturar dados operacionais da jornada do pedido
-2. Calcular a probabilidade de o cliente se tornar detrator
-3. Classificar o cliente em faixas de risco (Crítico / Alto / Médio / Baixo)
-4. Acionar intervenções preventivas de acordo com a criticidade
-5. Monitorar impacto no NPS e na retenção
-
----
-
-## Estrutura do notebook
-
-| Seção | Conteúdo |
+| Coluna | Descrição |
 |---|---|
-| 1. Setup e Configuração | Imports, XGBoost, SHAP, utilitários |
-| 2. Carregamento dos Dados | CSV: 2.500 registros (`desafio_nps_fase_1.csv`) |
-| 3. Preparação dos Dados | Target `is_detractor`, feature engineering com 5 variáveis derivadas |
-| 4. Split Holdout (75/25) | Split estratificado único + StratifiedKFold 5 folds sobre o treino |
-| 5. Pipeline e Treinamento | RF vs XGBoost, validação cruzada estratificada |
-| 6. Avaliação do Modelo | AUC-ROC, curvas ROC e Precision-Recall no holdout |
-| 6.5 Threshold Ótimo + SHAP | Threshold via F2-Score, SHAP top 15 features |
-| 6.6 Comparação com/sem CSAT | Documenta impacto do `csat_internal_score` |
-| 7. Score de Risco e Faixas | Probabilidade convertida em score % e faixas Crítico / Alto / Médio / Baixo |
-| 8. Uso Operacional | Ranking por risco, ações recomendadas, simulação de capacidade diária |
-| 9. Análise Operacional de Frete | Faixas por quartil, regras de decisão frete x atraso x score |
-| 10. ROI e Decisão Executiva | R$ 15/intervenção, R$ 120/perda, 20% sucesso |
-| 11. Monitoramento e Evolução | Drift de variáveis, proporção de detratores, gatilhos de retreinamento |
-| 12. Teste A/B e Inferência | Proporção + Mann-Whitney, 18% de recuperação dos detratores tratados |
-| 13. Impacto Financeiro e Reputacional | Receita em risco, benefícios com 35% de melhoria nos grupos críticos |
-| 14. Conclusão Executiva | Frentes de atuação e síntese do impacto |
+| `customer_id` | Identificador único do cliente |
+| `customer_region` | Região do cliente |
+| `customer_age` | Idade do cliente |
+| `customer_tenure_months` | Tempo de relacionamento (meses) |
+| `order_id` | Identificador do pedido |
+| `order_value` | Valor total do pedido |
+| `items_quantity` | Quantidade de itens |
+| `discount_value` / `desconto_pct` | Valor e percentual de desconto |
+| `payment_installments` | Parcelas de pagamento |
+| `delivery_time_days` | Tempo total de entrega (dias) |
+| `delivery_delay_days` | Dias de atraso em relação ao prazo |
+| `freight_value` | Valor do frete |
+| `delivery_attempts` | Número de tentativas de entrega |
+| `customer_service_contacts` | Contatos com o SAC |
+| `resolution_time_days` | Tempo de resolução (dias) |
+| `nps_score` | Score NPS do cliente (0–10) |
+| `classificacao_nps` | Detrator / Neutro / Promotor |
+| `eh_detrator` | Flag binária de Detrator |
+| `repeat_purchase_30d` | Recompra em 30 dias (binário) |
+| `complaints_count` | Número de reclamações |
+| `csat_internal_score` | Score CSAT interno |
+| `teve_atraso` | Flag: pedido teve atraso |
+| `teve_reclamacao` | Flag: cliente registrou reclamação |
+| `contatou_sac` | Flag: cliente contatou SAC |
+| `severidade_problemas` | Severidade dos problemas relatados |
+
+### Variáveis derivadas (criadas no notebook)
+
+| Coluna | Descrição |
+|---|---|
+| `freight_ratio` | `freight_value / order_value` — peso proporcional do frete no pedido |
+| `has_multiple_attempts` | Booleano: mais de uma tentativa de entrega |
+| `delay_range` | Faixa de atraso: Sem atraso / Até 1 dia / 2–3 dias / 4–5 dias / 6–10 dias / Acima de 10 dias |
 
 ---
 
-## Decisões de modelagem
+## Estrutura do Notebook
 
-**Variáveis excluídas (risco de leakage):**
-
-| Variável | Motivo |
-|---|---|
-| `repeat_purchase_30d` | Recompra ocorre após a resposta ao NPS |
-| `csat_internal_score` | Momento de coleta não validado com o negócio |
-| `nps_score` / `classificacao_nps` / `is_detractor` | Variáveis target |
-
-**Feature engineering (pontos de ruptura da EDA):**
-
-| Variável | Critério |
-|---|---|
-| `atraso_critico` | `delivery_delay_days >= 3` |
-| `reclamacao_alta` | `complaints_count >= 5` |
-| `multiplos_contatos` | `customer_service_contacts >= 3` |
-| `atraso_x_reclamacao` | `delivery_delay_days x complaints_count` |
-| `freight_ratio` | `freight_value / order_value` |
-
-**Modelo selecionado:** XGBoost (melhor AUC/F1 na validação cruzada e no holdout)
-
-**Threshold otimizado via F2-Score:** prioriza recall, pois identificar detratores é mais importante do que evitar falsos positivos.
+```
+P3_EDA_Logistica_e_Pedido.ipynb
+│
+├── 0.  Preparação do ambiente
+├── 1.  Carregamento e validação inicial da base
+├── 2.  Distribuição da classificação NPS
+├── 3.  Criação e validação das variáveis derivadas
+├── 4.  Estatística descritiva de logística e pedido por categoria NPS
+├── 5.  Atraso de entrega por categoria de NPS
+├── 6.  Probabilidade condicional: NPS dado atraso
+├── 7.  Ponto de ruptura no atraso (por faixas)
+├── 8.  Frete absoluto e peso proporcional do frete
+├── 9.  Tentativas de entrega
+├── 10. Valor do pedido e faturamento observado  [implícito nas análises regionais]
+├── 11. Análise regional: logística, NPS e faturamento
+├── 12. [continuação regional — tabela consolidada]
+├── 13. Matriz de correlação (NPS × logística × pedido)
+├── 14. Testes estatísticos: Kruskal-Wallis + Mann-Whitney (Bonferroni)
+├── 15. Relação do P3 com o modelo preditivo
+└── 16. Resumo executivo dos achados
+```
 
 ---
 
-## Estratégia de validação
+## Hipóteses Testadas
 
-A validação adota dois níveis complementares para garantir que a avaliação de performance seja robusta e sem contaminação de dados.
-
-**Nível 1 — Holdout único 75/25**
-
-O conjunto de dados é dividido uma única vez em treino (75%) e teste (25%) com estratificação, garantindo que a proporção de detratores se mantém igual nos dois conjuntos. O conjunto de teste fica isolado e não é tocado durante nenhuma etapa de treinamento ou ajuste.
-
-**Nível 2 — StratifiedKFold (5 folds) sobre o treino**
-
-O conjunto de treino é dividido em 5 partes iguais e estratificadas. A cada iteração, 4 partes são usadas para treinar e 1 para validar, rotacionando até que todos os subconjuntos sirvam como validação. Isso produz 5 estimativas de performance que, combinadas, dão uma visão estável do comportamento do modelo sem usar o holdout.
-
-| Etapa | Conjunto utilizado | Objetivo |
+| ID | Hipótese | Status |
 |---|---|---|
-| Cross-validation (5 folds) | 75% do treino | Comparar modelos e detectar overfitting |
-| Treinamento final | 100% do treino (75%) | Treinar com o máximo de dados disponível |
-| Avaliação final | Holdout (25%) | Medir performance real em dados nunca vistos |
+| **H1** | Pedidos com atraso apresentam maior proporção de Detratores | ✅ Confirmada |
+| **H2** | Existe um ponto de ruptura no atraso onde Detratores aumentam relevantemente | ✅ Identificada por faixas |
+| **H3** | O peso proporcional do frete pode estar associado à menor satisfação | 🔍 Analisada via `freight_ratio` |
+| **H4** | Múltiplas tentativas de entrega podem estar associadas à menor satisfação | 🔍 Avaliada via `has_multiple_attempts` |
+| **H5** | Pedidos de maior valor com atraso representam oportunidades de melhoria logística e preservação de faturamento | ✅ Relevante por faturamento observado |
 
 ---
 
-## Faixas de risco e ações recomendadas
+## Metodologia
 
-| Faixa | Critério | Ação |
-|---|---|---|
-| Crítico | Score acima de 80% | Contato humano prioritário e análise imediata do pedido |
-| Alto | Score entre 60% e 79% | Contato preventivo e acompanhamento da jornada |
-| Médio | Score entre 40% e 59% | Comunicação automatizada e monitoramento |
-| Baixo | Score abaixo de 40% | Fluxo padrão sem intervenção imediata |
+- **Estatística descritiva:** média, mediana, desvio padrão, mínimo e máximo por categoria de NPS
+- **Probabilidade condicional:** tabelas cruzadas normalizadas para observar distribuição de NPS dado atraso / tentativas
+- **Análise de faixas:** `delay_range` como variável operacional para identificar ponto de ruptura
+- **Correlação de Pearson:** matriz de correlação entre NPS e variáveis numéricas
+- **Testes não paramétricos:**
+  - Kruskal-Wallis — diferença entre três grupos
+  - Mann-Whitney U com correção de Bonferroni — comparações par a par
+- **Análise regional:** cruzamento de logística, NPS e faturamento por `customer_region`
 
 ---
 
-## Monitoramento em produção
+## Recomendações Operacionais
 
-**Indicadores monitorados:**
+1. **Monitorar atrasos desde o 1º dia** — o sinal de insatisfação começa cedo.
+2. **Definir um SLA de ruptura** — usar as faixas do `delay_range` para estabelecer limite de tolerância operacional.
+3. **Tratar múltiplas tentativas como alerta** — sinaliza falha logística ou de comunicação com o cliente.
+4. **Usar `freight_ratio`** — analisar frete proporcional, não apenas valor absoluto.
+5. **Priorizar pedidos de alto valor com atraso** — preservação de faturamento e risco de churn.
+6. **Avaliar estratégia regional** — verificar se ações corretivas devem ser localizadas ou aplicadas a toda a operação.
+7. **Usar as variáveis do P3 como insumo para modelagem preditiva de NPS** — atraso, frete, tentativas e recompra são candidatas relevantes.
 
-- Proporção de detratores reais por período
-- Score médio de risco por período
-- Distribuição das variáveis operacionais (`delivery_delay_days`, `complaints_count`, `customer_service_contacts`, `resolution_time_days`)
+---
 
-**Gatilhos de retreinamento:**
+## Relação com o Projeto Maior
 
-- Queda relevante no recall de detratores
-- Variação acima de 10 p.p. na proporção de detratores
-- Mudança abrupta no score médio de risco
-- Alteração nos padrões das variáveis operacionais
-- Mudança operacional relevante (novo parceiro logístico, nova política de atendimento)
-- Acúmulo de nova base mensal ou trimestral
+Este notebook integra uma série de análises (P1, P2, P3...) voltadas à compreensão do NPS e à construção de um modelo preditivo.
+
+- A **V1** permanece como base de referência principal (inclui Detratores com NPS = 0).
+- A **V2** (utilizada neste notebook) valida a robustez dos padrões após remoção dos extremos.
+- O **P3** conecta os achados exploratórios às variáveis candidatas para a próxima etapa de modelagem preditiva de NPS.
 
 ---
 
@@ -139,18 +159,21 @@ O conjunto de treino é dividido em 5 partes iguais e estratificadas. A cada ite
 pandas
 numpy
 matplotlib
-scikit-learn
-xgboost
-shap
+seaborn
 scipy
 ```
 
 ---
 
-## Arquivo de dados
+## Como Executar
 
-```
-desafio_nps_fase_1.csv
+```bash
+# Clone o repositório ou abra no Jupyter
+jupyter notebook P3_EDA_Logistica_e_Pedido.ipynb
 ```
 
-2.500 registros com variáveis operacionais da jornada do pedido. Target: `nps_score` (detrator = NPS de 6 ou menos).
+Certifique-se de que o arquivo `desafio_nps_processado_v2.csv` está no mesmo diretório do notebook, ou ajuste o `path_v2` na célula de carregamento.
+
+---
+
+> *"O EDA geral encontrou o problema. O P3 explicou a mecânica logística desse problema: atraso, tentativas, frete e valor do pedido ajudam a entender onde a experiência se deteriora e onde a operação pode atuar para melhorar satisfação e preservar faturamento."*
