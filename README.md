@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 📊 EDA e Modelo Preditivo — NPS E-commerce
 
 Análise exploratória de dados e modelos preditivos para o Net Promoter Score (NPS) de um e-commerce, com foco em identificar os drivers operacionais de insatisfação e antecipar detratores antes da pesquisa de NPS.
