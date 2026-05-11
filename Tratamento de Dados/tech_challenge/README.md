@@ -101,4 +101,4 @@ jupyter notebook 01_limpeza_eda.ipynb
 
 ## 👥 Autores
 
-Grupo Pós-Tech AI Scientist — Fase 1 (2026)
+Grupo 64 Pós-Tech AI Scientist — Fase 1 (2026)
