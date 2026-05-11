@@ -126,4 +126,4 @@ Abra o notebook [`demo.ipynb`](demo.ipynb) para ver o projeto completo em ação
 ---
 
 ## Autor
-Pós-graduação em AI Scientist — FIAP (2026)
+Pós-graduação em AI Scientist — FIAP (2026) - Grupo 64
