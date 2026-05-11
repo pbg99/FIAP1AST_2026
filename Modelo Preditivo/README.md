@@ -109,5 +109,4 @@ Análise exploratória de dados e modelos preditivos para o Net Promoter Score (
 - **Público-alvo:** Times de operações, logística e atendimento; gestão sênior
 
 ---
-
 *Nota: a seção de modelagem foi construída com suporte de IA e está documentada para revisão por especialistas em ML antes de uso em ambiente de produção.*
