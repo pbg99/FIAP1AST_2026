@@ -1,9 +1,7 @@
 # P3 — EDA Logística e Pedido
 
 > **Atraso, Frete, Tentativas e Valor do Pedido na Satisfação do Cliente**
-
 ---
-
 ## Visão Geral
 
 Este projeto aprofunda a análise exploratória de dados (EDA) das variáveis logísticas e de pedido com foco na satisfação do cliente medida por NPS. A base utilizada é a **versão V2** do dataset processado (`desafio_nps_processado_v2.csv`), na qual registros com `nps_score = 0` foram removidos para validação de robustez dos padrões identificados na V1.
