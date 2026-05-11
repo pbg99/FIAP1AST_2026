@@ -126,6 +126,4 @@ Abra o notebook [`demo.ipynb`](demo.ipynb) para ver o projeto completo em ação
 ---
 
 ## Autor
-
-**Gustavo Pietro Seferin**
 Pós-graduação em AI Scientist — FIAP (2026)

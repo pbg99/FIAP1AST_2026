@@ -148,6 +148,4 @@ README.md                                  ← este arquivo
 
 ---
 
-## Autor
 
-Gustavo Pietro — Pós-graduação FIAP · Tech Challenge NPS
