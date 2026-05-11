@@ -152,5 +152,4 @@ scipy
 ```
 desafio_nps_fase_1.csv
 ```
-
 2.500 registros com variáveis operacionais da jornada do pedido. Target: `nps_score` (detrator = NPS de 6 ou menos).
