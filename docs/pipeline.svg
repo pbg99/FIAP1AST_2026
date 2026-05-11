@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="900" height="320" rx="12" fill="url(#bg)"/>
+  
+  <text x="450" y="35" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="bold">Pipeline — NPS Preditivo E-commerce (CRISP-DM)</text>
+  
+  <!-- Step 1: Data -->
+  <rect x="20" y="60" width="120" height="70" rx="10" fill="#1f6feb" filter="url(#shadow)"/>
+  <text x="80" y="90" text-anchor="middle" fill="white" font-size="22">📊</text>
+  <text x="80" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Base de Dados</text>
+  <text x="80" y="150" text-anchor="middle" fill="#8b949e" font-size="9">2.500 pedidos</text>
+  <text x="80" y="163" text-anchor="middle" fill="#8b949e" font-size="9">19 variáveis</text>
+  
+  <!-- Arrow 1 -->
+  <path d="M145 95 L170 95" stroke="#30363d" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Step 2: EDA -->
+  <rect x="175" y="60" width="120" height="70" rx="10" fill="#8957e5" filter="url(#shadow)"/>
+  <text x="235" y="90" text-anchor="middle" fill="white" font-size="22">🔍</text>
+  <text x="235" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">EDA</text>
+  <text x="235" y="150" text-anchor="middle" fill="#8b949e" font-size="9">Análise exploratória</text>
+  <text x="235" y="163" text-anchor="middle" fill="#8b949e" font-size="9">Testes estatísticos</text>
+  
+  <!-- Arrow 2 -->
+  <path d="M300 95 L325 95" stroke="#30363d" stroke-width="2"/>
+  
+  <!-- Step 3: Feature Eng -->
+  <rect x="330" y="60" width="120" height="70" rx="10" fill="#da3633" filter="url(#shadow)"/>
+  <text x="390" y="90" text-anchor="middle" fill="white" font-size="22">⚙️</text>
+  <text x="390" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Features</text>
+  <text x="390" y="150" text-anchor="middle" fill="#8b949e" font-size="9">Pontos de ruptura</text>
+  <text x="390" y="163" text-anchor="middle" fill="#8b949e" font-size="9">5 features derivadas</text>
+  
+  <!-- Arrow 3 -->
+  <path d="M455 95 L480 95" stroke="#30363d" stroke-width="2"/>
+  
+  <!-- Step 4: Modelo -->
+  <rect x="485" y="60" width="120" height="70" rx="10" fill="#f0883e" filter="url(#shadow)"/>
+  <text x="545" y="90" text-anchor="middle" fill="white" font-size="22">🤖</text>
+  <text x="545" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Modelo</text>
+  <text x="545" y="150" text-anchor="middle" fill="#8b949e" font-size="9">XGBoost / RF</text>
+  <text x="545" y="163" text-anchor="middle" fill="#8b949e" font-size="9">AUC ~0.92</text>
+  
+  <!-- Arrow 4 -->
+  <path d="M610 95 L635 95" stroke="#30363d" stroke-width="2"/>
+  
+  <!-- Step 5: Score -->
+  <rect x="640" y="60" width="120" height="70" rx="10" fill="#238636" filter="url(#shadow)"/>
+  <text x="700" y="90" text-anchor="middle" fill="white" font-size="22">📈</text>
+  <text x="700" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Score Risco</text>
+  <text x="700" y="150" text-anchor="middle" fill="#8b949e" font-size="9">4 faixas de risco</text>
+  <text x="700" y="163" text-anchor="middle" fill="#8b949e" font-size="9">Priorização diária</text>
+  
+  <!-- Arrow 5 -->
+  <path d="M765 95 L790 95" stroke="#30363d" stroke-width="2"/>
+  
+  <!-- Step 6: Action -->
+  <rect x="795" y="60" width="85" height="70" rx="10" fill="#3fb950" filter="url(#shadow)"/>
+  <text x="837" y="90" text-anchor="middle" fill="white" font-size="22">🎯</text>
+  <text x="837" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Ação</text>
+  <text x="837" y="150" text-anchor="middle" fill="#8b949e" font-size="9">SAC preventivo</text>
+  <text x="837" y="163" text-anchor="middle" fill="#8b949e" font-size="9">Intervenção</text>
+  
+  <!-- Bottom: Risk bands -->
+  <text x="450" y="210" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="bold">Faixas de Risco Operacional</text>
+  
+  <rect x="80" y="230" width="160" height="55" rx="8" fill="#c0392b" opacity="0.9"/>
+  <text x="160" y="253" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Crítico (≥80%)</text>
+  <text x="160" y="273" text-anchor="middle" fill="#ffd7d7" font-size="10">Contato humano imediato</text>
+  
+  <rect x="260" y="230" width="160" height="55" rx="8" fill="#e67e22" opacity="0.9"/>
+  <text x="340" y="253" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Alto (60-79%)</text>
+  <text x="340" y="273" text-anchor="middle" fill="#ffecd7" font-size="10">Contato preventivo</text>
+  
+  <rect x="440" y="230" width="160" height="55" rx="8" fill="#f1c40f" opacity="0.9"/>
+  <text x="520" y="253" text-anchor="middle" fill="#1a1a1a" font-size="12" font-weight="bold">Médio (40-59%)</text>
+  <text x="520" y="273" text-anchor="middle" fill="#3d3d00" font-size="10">Monitoramento ativo</text>
+  
+  <rect x="620" y="230" width="160" height="55" rx="8" fill="#27ae60" opacity="0.9"/>
+  <text x="700" y="253" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Baixo (&lt;40%)</text>
+  <text x="700" y="273" text-anchor="middle" fill="#d7ffe0" font-size="10">Fluxo padrão</text>
+</svg>
